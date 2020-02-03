@@ -225,10 +225,10 @@ class Sound {
   }
 }
 
-const coinSound = new Sound("../src/audios/collect_coin.wav");
-const winSound = new Sound("../src/audios/win.wav");
-const deathSound = new Sound("../src/audios/death_2.wav");
-const finishSound = new Sound("../src/audios/finish_game.wav");
+const coinSound = new Sound("src/audios/collect_coin.wav");
+const winSound = new Sound("src/audios/win.wav");
+const deathSound = new Sound("src/audios/death_2.wav");
+const finishSound = new Sound("src/audios/finish_game.wav");
 finishSound.volume = 0.5;
 
 // MoveX
