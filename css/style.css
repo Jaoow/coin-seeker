@@ -4,6 +4,11 @@ body {
   font-family: "Press Start 2P", "Helvetica", sans-serif;
 }
 
+/* 000webhost remove */
+img[alt="www.000webhost.com"] {
+  display: none !important;
+}
+
 h2 {
   font-size: 45px;
   color: white;
