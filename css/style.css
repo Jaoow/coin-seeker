@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
+body {
+  background: #1d1d1f;
+  font-family: "Press Start 2P", "Helvetica", sans-serif;
+}
+
+h2 {
+  font-size: 45px;
+  color: white;
+  font-weight: 900;
+  text-align: center;
+}
+
+h2 strong {
+  color: gold;
+}
+
+.instructions {
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.instructions p {
+  margin: 10px;
+  color: white;
+  font-size: 20px;
+}
+
+.instructions p strong {
+  color: #ce372b;
+  margin: auto;
+}
+
+.instructions span {
+  color: whitesmoke;
+  font-size: 18px;
+}
+
+.instructions span strong {
+  color: #209cee;
+}
+
+/* GAME BACKGROUND */
+
+.background {
+  table-layout: fixed;
+  border-spacing: 0;
+}
+
+.background td {
+  padding: 0;
+}
+
+.lava,
+.actor {
+  background: #e55;
+}
+
+.lavag {
+  border-radius: 0% 50% 50% 50%;
+  transform: rotate(45deg);
+}
+
+.actor .mob {
+  background-color: greenyellow;
+}
+
+.wall {
+  background: #1d2651;
+  box-sizing: content-box;
+}
+
+.grass {
+  background: green;
+  box-sizing: content-box;
+}
+
+.mob {
+  background: greenyellow;
+  box-sizing: content-box;
+}
+
+.actor {
+  position: absolute;
+}
+
+.coin {
+  background: url("../src/images/animated_coin.gif");
+  background-size: 100%;
+}
+
+.player {
+  background: #38c0f2;
+  box-shadow: none;
+  padding: 0px !important;
+}
+
+.lost .player {
+  background: #a04040;
+}
+
+.won .player {
+  background: green;
+}
+
+.count {
+  position: absolute;
+  overflow: hidden;
+  text-align: right;
+  font-size: 40px;
+  font-weight: 600;
+  color: #ff0000;
+  padding: 20px;
+  z-index: 1;
+  left: 18%;
+  margin-top: 10px;
+}
+
+.count:nth-child(2n) {
+  align-content: space-around;
+  color: gold;
+  right: 18%;
+}
+
+.gold {
+  color: gold;
+}
+
+.game {
+  position: relative;
+  overflow: hidden;
+  max-width: 65vw;
+  max-height: 75vh;
+  margin: 20px auto;
+  border: 10px solid #0b1234;
+  background-color: #243166;
+  left: -10px;
+}
+
+.scale {
+  align-content: center;
+  display: table;
+  border: 10px solid white;
+  margin: 12px auto;
+  text-align: center;
+  padding: 5px;
+}
+
+.scale .text {
+  color: #324e63;
+}
+
+.scale p {
+  color: red;
+  text-align: center;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 3px;
+}
+
+.scale button {
+  font-family: "Press Start 2P", "Helvetica", sans-serif;
+  border: none;
+  outline: none;
+  padding: 5px;
+  margin: 20px 5px 10px 5px;
+  background: #bcc;
+}
+
+.new {
+  margin: auto;
+  border: 10px solid #0b1234;
+  background-color: #243166;
+  border-radius: 12px;
+  max-width: 360px;
+  text-align: center;
+  margin: 120px auto;
+  max-width: 40vw;
+  padding: 50px;
+}
+
+.new .itens {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: 35px;
+  margin-bottom: 35px;
+}
+
+.itens .item {
+  padding: 10px 0px;
+  min-width: 150px;
+}
+
+.item .title {
+  font-weight: 600;
+  font-size: 27px;
+  color: #324e63;
+}
+
+.item .text {
+  font-weight: 800;
+  font-size: 20px;
+  margin-top: 7px;
+  color: #324e63;
+}
+
+.new h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+#red {
+  color: firebrick;
+}
+
+#gold {
+  color: goldenrod;
+}
+
+.new button {
+  background-color: green;
+  border: none;
+  font-family: "Press Start 2P", "Helvetica", sans-serif;
+  padding: 20px;
+  outline: none;
+  margin: 10px;
+  color: white;
+}
