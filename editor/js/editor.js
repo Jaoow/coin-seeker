@@ -457,7 +457,7 @@ class Editor {
     setTimeout(function(){
       LEVELS = LEVELS2;
       startNewGame()
-      this.start();
+      editor.start();
     }, 750);
     
   }
