@@ -36,7 +36,7 @@ var LEVELS = [
     "                                                                             xo    x",
     "                                                     xxxxx                   xx    x",
     "                                             xxxxxxxxxvxvxxxxxxxxxxxxxxxxxxxxx     x",
-    "                                             x      v     v                        x",
+    "                                             x                                   x",
     "                                             x                                     x",
     "                                             x                                     x",
     "                                             x    o         o                      x",
