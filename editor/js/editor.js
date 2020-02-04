@@ -52,8 +52,7 @@ String.prototype.replaceAt=function(index, replacement) {
 
 class Editor {
   constructor() {
-    this.cursorY = 0;
-    this.cursorX = 0;
+    this.start();
     this.active = false;
     this.logActive = true;
     this.itemIndex = 2;
@@ -72,10 +71,16 @@ class Editor {
     this.setItem(this.itemIndex); 
   }
 
+  start() {
+    this.cursorX = Math.round(this.clientWidth()/2/scale);
+    this.cursorY = Math.round(this.clientHeight()/2/scale);
+  }
+
   switch() {
     this.active = !this.active;
     if (this.active) {
       this.showCursor();
+      this.focus();
     } 
     else {
       this.hideCursor();
@@ -115,12 +120,6 @@ class Editor {
     }
     if (itemIndex!==false) {
       this.setItem(itemIndex);
-    }
-  }
-
-  consoleStatus(t) {
-    if (this.logActive) {
-      console.log(t+" | x:"+this.cursorX+" | y:"+this.cursorY+" | i:"+this.itemIndex+" | a:"+this.active);
     }
   }
 
@@ -174,11 +173,19 @@ class Editor {
     this.consoleStatus("cleanItem()");
   }
 
+  bord() {
+    return scale * 1;
+  }
+
   up() {
     if (this.cursorY>0) {
       this.hideCursor();
       this.cursorY--;
       this.showCursor();
+      this.focus() 
+      //if (this.posY() < this.scrollTop() + this.bord()) {
+      //  this.scrollTop(this.scrollTop()-scale);
+      //}
     }
     this.consoleStatus("up()");
   }
@@ -188,6 +195,10 @@ class Editor {
       this.hideCursor();
       this.cursorY++;
       this.showCursor(); 
+      this.focus() 
+      //if (this.posY() > this.clientHeight() - this.bord()) {
+      //  this.scrollTop(this.scrollTop()+scale);
+      //}
     }
     this.consoleStatus("down()");
   }
@@ -197,6 +208,10 @@ class Editor {
       this.hideCursor();
       this.cursorX--;
       this.showCursor();
+      //if (this.posX() < this.scrollLeft() + this.bord()) {
+      //  this.scrollLeft(this.scrollLeft()-scale);
+      //}
+      this.focus() 
     }
     this.consoleStatus("left()");
   }
@@ -205,7 +220,11 @@ class Editor {
     if (this.cursorX<game.level.grid[this.cursorY].length-1) {
       this.hideCursor();
       this.cursorX++;
-      this.showCursor(); 
+      this.showCursor();
+      //if (this.posX() > this.clientWidth() - this.bord()) {
+      //  this.scrollLeft(this.scrollLeft()+scale);
+      //}
+      this.focus() 
     }
     this.consoleStatus("right()");
   }
@@ -285,6 +304,93 @@ class Editor {
     this.right();
   }
 
+  divGame() {
+    return document.querySelector("#game-content div.game");
+  }
+
+  cellWidth() {
+    this.celula(0,0).width;  
+  }
+  
+  cellHeight() {
+    this.celula(0,0).height;  
+  }
+
+  cusorLeft() {
+    //return this.cursorX * this.cellWidth();
+    return this.cursorX * scale;
+  }
+
+  cursorTop() {
+    //return this.cursorY * this.cellHeight();
+    return this.cursorY * scale;
+  }
+
+  posX() {
+    return this.cursorX * scale;
+  }
+
+  posY() {
+    return this.cursorY * scale;
+  }
+
+  scrollLeft(scroll) {
+    var previous = this.divGame().scrollLeft;
+    if (scroll!==undefined) {
+      this.divGame().scrollLeft = scroll;
+    } 
+    return previous;
+  }
+
+  scrollTop(scroll) {
+    var previous = this.divGame().scrollTop;
+    if (scroll!==undefined) {
+      this.divGame().scrollTop = scroll;
+    } 
+    return previous;
+  }
+
+  width() {
+    return this.divGame().scrollWidth;
+  }
+
+  height() {
+    return this.divGame().scrollHeight;
+  }
+
+  clientWidth() {
+    return this.divGame().clientWidth;
+  }
+
+  clientHeight() {
+    return this.divGame().clientHeight;
+  }
+
+  focus() {
+    this.scrollLeft(this.posX()-Math.round(this.clientWidth()/2));
+    this.scrollTop(this.posY()-Math.round(this.clientHeight()/2));
+  }
+
+  consoleStatus(t) {
+    if (this.logActive) {
+      console.log(t
+        +" | x:"+this.cursorX
+        +" | y:"+this.cursorY
+        +" | i:"+this.itemIndex
+        +" | a:"+this.active
+        +" | scroll L: "+this.scrollLeft()
+        +" | scroll T: "+this.scrollTop()
+        +" | posX: "+this.posX()
+        +" | posY: "+this.posY()
+        +" | clientW: "+this.clientWidth()
+        +" | clientH: "+this.clientHeight()
+        +" | Width: "+this.width()
+        +" | Height: "+this.height()
+      );
+    }
+  }
+
+
   restartGame() {
     runGame(LEVELS, DOMDisplay)
   }
@@ -347,11 +453,13 @@ class Editor {
     
     this.game = this.getGameById(gameId);
     loadLevels(this.game);
-  
+    
     setTimeout(function(){
       LEVELS = LEVELS2;
       startNewGame()
+      this.start();
     }, 750);
+    
   }
 }
 editor = new Editor;
