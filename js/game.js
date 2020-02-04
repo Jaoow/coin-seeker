@@ -579,6 +579,9 @@ class DOMDisplay {
   }
 
   scrollPlayerIntoView() {
+    if (game.editor && game.editor.active) {
+      return false;
+    }
     var width = this.wrap.clientWidth;
     var height = this.wrap.clientHeight;
     var margin = width / 4;
