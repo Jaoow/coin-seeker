@@ -1,19 +1,3 @@
-/*
-var games = [
-  {
-    "id": 1,
-    "autor": "joão Lucas",
-    "path": "levels/joaolucas/01/",
-    "length": 6
-  },
-  {
-    "id": 2,
-    "autor": "Jair Dias",
-    "path": "levels/jairedias/01/",
-    "length": 1
-  }
-];
-*/
 var games = [
   {
     "id": 1,
@@ -34,13 +18,11 @@ var games = [
     "title": "Fases Game 01",
     "autor": "joão Lucas",
     "path": "editor/levels/game/01/",
-    "length": 6
+    "length": 5
   },
 ]
 
-//var games = require('./data.json'); //with path
-//var games = require('./editor/levels/games.json'); //with path
-
+var php = getParameterByName("nophp")===null;
 var LEVELS2 = [];
 var LEVELS_OK = false;
 var LAST_LEVEL_PATH = "";
@@ -49,6 +31,26 @@ var gameIndex = 0;
 String.prototype.replaceAt=function(index, replacement) {
   return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
 }
+
+function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, '\\$&');
+  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/*
+Usage:
+
+// query string: ?foo=lorem&bar=&baz
+var foo = getParameterByName('foo'); // "lorem"
+var bar = getParameterByName('bar'); // "" (present with empty value)
+var baz = getParameterByName('baz'); // "" (present with no value)
+var qux = getParameterByName('qux'); // null (absent)
+*/
 
 class Editor {
   constructor() {
@@ -163,8 +165,6 @@ class Editor {
 
   insertItem() {
     this.setLevelGrid(this.getLevelIndex(),this.cursorX, this.cursorY, this.itemIndex);
-    //runGame(LEVELS, DOMDisplay);
-    //playerDeath();
     this.consoleStatus("insertItem()");
   }
 
@@ -183,9 +183,6 @@ class Editor {
       this.cursorY--;
       this.showCursor();
       this.focus() 
-      //if (this.posY() < this.scrollTop() + this.bord()) {
-      //  this.scrollTop(this.scrollTop()-scale);
-      //}
     }
     this.consoleStatus("up()");
   }
@@ -196,9 +193,6 @@ class Editor {
       this.cursorY++;
       this.showCursor(); 
       this.focus() 
-      //if (this.posY() > this.clientHeight() - this.bord()) {
-      //  this.scrollTop(this.scrollTop()+scale);
-      //}
     }
     this.consoleStatus("down()");
   }
@@ -208,9 +202,6 @@ class Editor {
       this.hideCursor();
       this.cursorX--;
       this.showCursor();
-      //if (this.posX() < this.scrollLeft() + this.bord()) {
-      //  this.scrollLeft(this.scrollLeft()-scale);
-      //}
       this.focus() 
     }
     this.consoleStatus("left()");
@@ -221,9 +212,6 @@ class Editor {
       this.hideCursor();
       this.cursorX++;
       this.showCursor();
-      //if (this.posX() > this.clientWidth() - this.bord()) {
-      //  this.scrollLeft(this.scrollLeft()+scale);
-      //}
       this.focus() 
     }
     this.consoleStatus("right()");
@@ -317,12 +305,10 @@ class Editor {
   }
 
   cusorLeft() {
-    //return this.cursorX * this.cellWidth();
     return this.cursorX * scale;
   }
 
   cursorTop() {
-    //return this.cursorY * this.cellHeight();
     return this.cursorY * scale;
   }
 
@@ -455,12 +441,22 @@ class Editor {
     this.game = this.getGameById(gameId);
     loadLevels(this.game);
     
-    setTimeout(function(){
+    function _init() {
       LEVELS = LEVELS2;
       startNewGame()
       oThis.start();
-    }, 750);
-    
+    }
+
+    if (php)
+      _init()
+    else {
+      // esse delay funciona em conjunto com o loadLevel sem PHP
+      // caso de problemas aumentar o intervalo
+      // mínimo para um processador i5 gen 9 foi 5ms
+      setTimeout(function() {
+        _init();
+      }, 750);
+    }
   }
 }
 editor = new Editor;
@@ -636,56 +632,61 @@ function loadGames(path) {
   client.send();
 }
 
-/*
-function loadLevel(path) {
-  var levelIndex = getLevelIndex(path);
-  if (levelIndex===false) {
-    return false;
-  }
-  var client = new XMLHttpRequest();
-  client.open('GET', path);
-  //client.open('GET', '/foo.txt');
-  client.onreadystatechange = function(event) {
-    //alert(client.responseText);
-    if (event.target.readyState===4) {
-      //LEVELS2.push(levelTextToArray(client.responseText));
-      LEVELS2[levelIndex] = levelTextToArray(client.responseText);
-      if (path===LAST_LEVEL_PATH) {
-        LEVELS_OK = true;
-      }
+if (!php) {
+  // funciona sem PHP
+  function loadLevel(path) {
+    var levelIndex = getLevelIndex(path);
+    if (levelIndex===false) {
+      return false;
     }
-  }
-  client.send();
-}
-*/
-function loadLevel(path) {
-  var levelIndex = getLevelIndex(path);
-  if (levelIndex===false) {
-    return false;
-  }
-  $.ajax("editor.php", {
-    "method": "POST",
-    "dataType": "json",
-    "async": false,
-    "data": {
-      "function": "loadLevel",
-      "levelPath": path
-    },
-    success(result) {
-      if (result.ok) {
-        LEVELS2[levelIndex] = levelTextToArray(result.content);
+    var client = new XMLHttpRequest();
+    client.open('GET', path);
+    //client.open('GET', '/foo.txt');
+    client.onreadystatechange = function(event) {
+      //alert(client.responseText);
+      if (event.target.readyState===4) {
+        //LEVELS2.push(levelTextToArray(client.responseText));
+        LEVELS2[levelIndex] = levelTextToArray(client.responseText);
         if (path===LAST_LEVEL_PATH) {
           LEVELS_OK = true;
         }
       }
-      else {
-        alert("Erro ao abrir level "+(levelIndex+1)+"\n\n"+result.message)
-      }
-    },
-    error(error, message) {
-      alert(message+"\n\n"+"")
     }
-  });
+    client.send();
+  }
+}
+else {
+
+  // requer PHP
+  function loadLevel(path) {
+    var levelIndex = getLevelIndex(path);
+    if (levelIndex===false) {
+      return false;
+    }
+    $.ajax("editor.php", {
+      "method": "POST",
+      "dataType": "json",
+      "async": false,
+      "data": {
+        "function": "loadLevel",
+        "levelPath": path
+      },
+      success(result) {
+        if (result.ok) {
+          LEVELS2[levelIndex] = levelTextToArray(result.content);
+          if (path===LAST_LEVEL_PATH) {
+            LEVELS_OK = true;
+          }
+        }
+        else {
+          alert("Erro ao abrir level "+(levelIndex+1)+"\n\n"+result.message)
+        }
+      },
+      error(error, message) {
+        alert(message+"\n\n"+"")
+      }
+    });
+  }
 }
 
 function loadLevelsList(path, length) {
@@ -715,9 +716,16 @@ function loadLevels(dados) {
   }
 }
 
+// Não utilizado ainda
 function loadAll() {
   loadGames();
   loadLevels();
 }
 
 game.editor = editor;
+
+// seta id do game inicial
+var gameId = 0;
+
+// inicia game dos arquivos de levels
+editor.init(gameId);
