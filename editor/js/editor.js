@@ -451,13 +451,14 @@ class Editor {
 
   init(gameId) {
     
+    var oThis = this;
     this.game = this.getGameById(gameId);
     loadLevels(this.game);
     
     setTimeout(function(){
       LEVELS = LEVELS2;
       startNewGame()
-      editor.start();
+      oThis.start();
     }, 750);
     
   }
