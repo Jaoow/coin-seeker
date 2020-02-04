@@ -622,8 +622,9 @@ function trackKeys(codes) {
   const pressed = Object.create(null);
 
   function handler(event) {
-    if (codes.hasOwnProperty(event.keyCode)) {
-      pressed[codes[event.keyCode]] = event.type === "keydown";
+    var codesEnabled = game.filterCodes(codes);
+    if (codesEnabled.hasOwnProperty(event.keyCode)) {
+      pressed[codesEnabled[event.keyCode]] = event.type === "keydown";
       event.preventDefault();
     }
   }
@@ -685,6 +686,10 @@ class Game {
     this.n = n!==undefined ? n : this.n;
     this.level.load(this.plans[this.n]);
     runLevel(this.level, this.Display, onFinish);
+  }
+
+  filterCodes(codes) {
+    return !this.editor || !this.editor.filterCodes ? codes : this.editor.filterCodes(codes);
   }
 }
 
