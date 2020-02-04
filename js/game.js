@@ -396,7 +396,17 @@ const actorchars = {
 };
 
 class Level {
-  constructor(plan) {
+  constructor() {
+    this.number = null;
+    this.width = null;
+    this.height = null;
+    this.grid = [];
+    this.actors = [];
+    this.player = null;
+    this.status = false;
+  }
+  
+  load(plan) {
     this.number = LEVELS.indexOf(plan) + 1;
     this.width = plan[0].length;
     this.height = plan.length;
@@ -663,33 +673,51 @@ function startNewGame() {
   runGame(LEVELS, DOMDisplay);
 }
 
+class Game {
+  constructor() {
+    this.n = null; // Level index
+    this.plans = null;
+    this.level = new Level();
+    this.Display = null;
+  }
+
+  startLevel(n) {
+    this.n = n!==undefined ? n : this.n;
+    this.level.load(this.plans[this.n]);
+    runLevel(this.level, this.Display, onFinish);
+  }
+}
+
+var game = new Game();
+
+function onFinish(status) {
+  if (status === "lost") {
+    game.startLevel(game.n);
+    Player.prototype.removeCoinInLevel();
+    Player.prototype.addDeath();
+  } else if (game.n < game.plans.length - 1) {
+    game.startLevel(this.n + 1);
+    Player.prototype.newLevel();
+  } else {
+    finishSound.cloneNode(true).play();
+    game_content.innerHTML =
+      '<div class="new"><h2>Game status:</h2><div class="itens"><div class="item"><div class="title" id="gold">' +
+      Player.prototype.coin +
+      '</div><div class="text" id="gold">Coins</div></div><div class="item" id="red"><div class="title" id="red">' +
+      Player.prototype.deaths +
+      '</div><div class="text" id="red">Mortes</div></div></div><button onclick="startNewGame();">START NEW GAME</button></div>';
+  }
+}
+
 function runGame(plans, Display) {
+  game.plans = plans;
+  game.Display = Display;
+
   (Player.prototype.coin = 0),
     (Player.prototype.coinInLevel = 0),
     (Player.prototype.deaths = 0);
 
-  function startLevel(n) {
-    runLevel(new Level(plans[n]), Display, function(status) {
-      if (status === "lost") {
-        startLevel(n);
-        Player.prototype.removeCoinInLevel();
-        Player.prototype.addDeath();
-      } else if (n < plans.length - 1) {
-        startLevel(n + 1);
-        Player.prototype.newLevel();
-      } else {
-        finishSound.cloneNode(true).play();
-        game_content.innerHTML =
-          '<div class="new"><h2>Game status:</h2><div class="itens"><div class="item"><div class="title" id="gold">' +
-          Player.prototype.coin +
-          '</div><div class="text" id="gold">Coins</div></div><div class="item" id="red"><div class="title" id="red">' +
-          Player.prototype.deaths +
-          '</div><div class="text" id="red">Mortes</div></div></div><button onclick="startNewGame();">START NEW GAME</button></div>';
-      }
-    });
-  }
-
-  startLevel(0);
+  game.startLevel(0);
 }
 
 runGame(LEVELS, DOMDisplay);
