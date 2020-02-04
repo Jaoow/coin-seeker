@@ -701,7 +701,7 @@ function onFinish(status) {
     Player.prototype.removeCoinInLevel();
     Player.prototype.addDeath();
   } else if (game.n < game.plans.length - 1) {
-    game.startLevel(this.n + 1);
+    game.startLevel(game.n + 1);
     Player.prototype.newLevel();
   } else {
     finishSound.cloneNode(true).play();
