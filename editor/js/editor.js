@@ -1021,7 +1021,6 @@ function editorKeyDown(e) {
   // OUTRAS TECLAS (para depurar seu code)
   if (!editor.active && e.keyCode!==16 && e.keyCode!==17 && e.altKey!==18) {
     console.log("keyCode:"+e.keyCode+" | shift:"+e.shiftKey+" | ctrl:"+e.ctrlKey+" | alt:"+e.altKey);
-    e.preventDefault();
   }
 
   // AS TECLAS A SEGUIR SÓ QUANDO EDITOR ATIVO
