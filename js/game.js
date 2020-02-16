@@ -841,3 +841,17 @@ function runGame(plans, Display) {
 }
 
 runGame(LEVELS, DOMDisplay)
+
+var movendoMouse = false;
+
+document.body.onmousemove = function() {
+  movendoMouse = true;
+  document.body.style.cursor = '';
+};
+
+setInterval(function(){
+  if (!movendoMouse) {
+    document.body.style.cursor = 'none';
+  }
+  movendoMouse = false;
+},1500);
