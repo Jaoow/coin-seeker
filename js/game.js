@@ -499,7 +499,9 @@ class DOMDisplay {
   }
 
   clear() {
-    this.wrap.parentNode.removeChild(this.wrap);
+    if (this.wrap.parentNode) {
+      this.wrap.parentNode.removeChild(this.wrap);
+    }
   }
 }
 
@@ -524,9 +526,12 @@ function trackKeys(codes) {
   const pressed = Object.create(null);
 
   function handler(event) {
+    var customKeyCode = event.customKeyCode===undefined ? event.keyCode : event.customKeyCode;
     var codesEnabled = game.filterCodes(codes);
-    if (codesEnabled.hasOwnProperty(event.keyCode)) {
-      pressed[codesEnabled[event.keyCode]] = event.type === "keydown";
+    if (codesEnabled.hasOwnProperty(customKeyCode)) {
+      var ok = event.type === "keydown"; 
+      var keyName = codesEnabled[customKeyCode];
+      pressed[keyName] = ok;
       event.preventDefault();
     }
   }
@@ -552,7 +557,8 @@ function runAnimation(frameFunc) {
   requestAnimationFrame(frame);
 }
 
-const arrows = trackKeys(arrowCodes);
+//const arrows = trackKeys(arrowCodes);
+var arrows = trackKeys(arrowCodes);
 
 function runLevel(level, Display, andThen) {
   const display = new Display(document.body, level);
@@ -582,6 +588,19 @@ class Game {
     this.plans = null;
     this.level = new Level();
     this.Display = null;
+    this.joypad = new GameJoypad()
+    this.joypad.beforeUpdate = function(sender, e, eventType) {
+      if (eventType==="axis_move") {
+        if (!window.editor || !editor.active) {
+          if (e.detail.gamepad.buttons[0].pressed) {
+            arrows.up = true;
+          }
+          else if (e.detail.gamepad.axes[1]!==-1) {
+            arrows.up = false;
+          }
+        }
+      }
+    }
   }
 
   startLevel(n) {
